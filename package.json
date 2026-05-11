@@ -1,0 +1,77 @@
+{
+  "name": "cumulus-relay",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "create-cumulus:build": "npm --prefix packages/create-cumulus run build",
+    "create-cumulus:test": "npm --prefix packages/create-cumulus run test",
+    "create-cumulus:typecheck": "npm --prefix packages/create-cumulus run typecheck",
+    "eval": "tsx scripts/eval-suite.ts",
+    "eval:smoke": "tsx scripts/e2e-smoke.ts",
+    "eval:billing": "tsx scripts/eval-billing.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.14",
+    "@hono/zod-openapi": "^1.3.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@neondatabase/serverless": "^1.0.2",
+    "@sentry/node": "^10.49.0",
+    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/server": "^13.3.0",
+    "ajv": "^8.18.0",
+    "ajv-formats": "^3.0.1",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.12.14",
+    "jose": "^6.2.2",
+    "next": "^16.2.4",
+    "pino": "^10.3.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "stripe": "^22.0.2",
+    "workflow": "^4.2.2",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^25.6.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vercel/config": "^0.2.0",
+    "@vitest/coverage-v8": "^4.1.4",
+    "drizzle-kit": "^0.31.10",
+    "pino-pretty": "^13.1.3",
+    "postcss": "^8.5.12",
+    "puppeteer-core": "^24.42.0",
+    "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vercel": "^51.4.0",
+    "vitest": "^4.1.4"
+  },
+  "overrides": {
+    "devalue": "^5.8.0",
+    "@workflow/world-local": {
+      "undici": "^7.25.0"
+    },
+    "@workflow/world-vercel": {
+      "undici": "^7.25.0"
+    }
+  },
+  "license": "AGPL-3.0-only",
+  "homepage": "https://relay.cumulush.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cumulus-s/relay.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Cumulus-s/relay/issues"
+  }
+}

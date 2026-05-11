@@ -1,0 +1,47 @@
+{
+  "name": "@cumulus/track",
+  "version": "0.2.0",
+  "description": "Tiny fire-and-forget activation tracker for Relay integrations. Drop one line into your key-validation middleware and report first authenticated API calls for cohort analytics.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "relay",
+    "agent",
+    "activation",
+    "analytics",
+    "cohort"
+  ],
+  "license": "MIT",
+  "homepage": "https://relay.cumulush.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cumulus-s/relay.git",
+    "directory": "packages/track-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/Cumulus-s/relay/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

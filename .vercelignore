@@ -1,0 +1,25 @@
+# Vercel ignores files that match these patterns when building the
+# deployment payload. Keeping the upload tight makes deploys reliable
+# (Vercel's upload step times out on huge tarballs).
+#
+# Note: .vercelignore patterns layer on top of, not replace, the default
+# ignore set (node_modules, .git, etc. are always ignored by Vercel).
+
+# Local-only build output and caches
+tmp/
+.next/
+.vercel/cache/
+.quarantine/
+
+# Per-session artifacts (saved transcripts; never deployed)
+sessions/
+
+# Editor / agent metadata
+.agents/
+.codex/
+
+# Render-pipeline byproducts
+*.mp4
+*.mov
+*.prores
+*.gif

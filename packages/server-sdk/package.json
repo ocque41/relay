@@ -1,0 +1,51 @@
+{
+  "name": "@cumulus/server",
+  "version": "0.1.0",
+  "description": "Server SDK for Relay — agent-driven signup + actions for any app. Drop in a webhook handler, let users onboard and their agents invoke your product actions.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "relay",
+    "agent",
+    "signup",
+    "webhook",
+    "ai",
+    "mcp"
+  ],
+  "license": "MIT",
+  "homepage": "https://relay.cumulush.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cumulus-s/relay.git",
+    "directory": "packages/server-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/Cumulus-s/relay/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

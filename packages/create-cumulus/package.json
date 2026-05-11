@@ -1,0 +1,51 @@
+{
+  "name": "create-cumulus",
+  "version": "0.1.3",
+  "description": "Create a Cumulus app with Relay-ready agent authentication, signup, actions, dashboards, and optional self-hosted API/MCP.",
+  "type": "module",
+  "bin": {
+    "create-cumulus": "dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc && chmod +x dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run test && npm run build"
+  },
+  "keywords": [
+    "cumulus",
+    "relay",
+    "create",
+    "nextjs",
+    "agent-auth",
+    "mcp"
+  ],
+  "license": "MIT",
+  "homepage": "https://relay.cumulush.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cumulus-s/relay.git",
+    "directory": "packages/create-cumulus"
+  },
+  "bugs": {
+    "url": "https://github.com/Cumulus-s/relay/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.4"
+  }
+}

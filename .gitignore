@@ -1,0 +1,116 @@
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+node_modules/
+packages/*/node_modules/
+examples/*/node_modules/
+
+# ---------------------------------------------------------------------------
+# Build outputs
+# ---------------------------------------------------------------------------
+.next/
+.output/
+.swc/
+.turbo/
+dist/
+packages/*/dist/
+tsconfig.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Environment + secrets — NEVER COMMIT
+# ---------------------------------------------------------------------------
+.env
+.env.local
+.env.production
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+.env.local.full
+*.pem
+*.key
+*.p12
+*.cert
+
+# ---------------------------------------------------------------------------
+# Vercel / deployment
+# ---------------------------------------------------------------------------
+.vercel/
+
+# ---------------------------------------------------------------------------
+# Internal build + plan artifacts
+# ---------------------------------------------------------------------------
+.tado/
+.claude/
+
+# ---------------------------------------------------------------------------
+# CLI runtime state
+# ---------------------------------------------------------------------------
+.relay/
+
+# ---------------------------------------------------------------------------
+# Editor / OS
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+*.swp
+*~
+
+# macOS Finder duplicates from manual file copies / iCloud sync — these are
+# stale broken siblings of real files (e.g. "dev 2.ts" next to "dev.ts").
+# Never tracked.
+* 2.ts
+* 2.tsx
+
+# ---------------------------------------------------------------------------
+# Coverage / test output
+# ---------------------------------------------------------------------------
+coverage/
+.nyc_output/
+
+# ---------------------------------------------------------------------------
+# Video rendering / frame capture (web-to-video skill)
+# ---------------------------------------------------------------------------
+# Puppeteer + ffmpeg pipeline writes thousands of PNG frames into tmp/ and
+# multi-hundred-MB ProRes masters alongside them. Final deliverables go to
+# ~/Downloads/ — never check the rendering scratch into the repo.
+tmp/
+**/*-frames/
+**/*-video-frames/
+# Common large rendering outputs that are clearly intermediate/scratch.
+# If the repo legitimately ships a video asset (e.g. public/videos/hero.mp4),
+# whitelist it explicitly: `!public/videos/hero.mp4` after these patterns.
+*-MASTER.mov
+*-MASTER.mp4
+*.prores
+.stripe-*.local.txt
+
+# Quarantined macOS Finder duplicates of source files (kept locally for safety)
+.quarantine/
+.agents/skills/relay-integrator-setup/SKILL.md
+.agents/skills/relay-sign-in/SKILL.md
+.codex/agents/phase-0-bootstrap.toml
+.codex/agents/phase-1-scaffolder.toml
+.codex/agents/phase-10-e2e-verify.toml
+.codex/agents/phase-2-charge-middleware.toml
+.codex/agents/phase-2-database.toml
+.codex/agents/phase-3-auth.toml
+.codex/agents/phase-3-wire-enforcement.toml
+.codex/agents/phase-4-neon-provider.toml
+.codex/agents/phase-5-billing-cli-mcp.toml
+.codex/agents/phase-5-vercel-provider.toml
+.codex/agents/phase-6-free-tier.toml
+.codex/agents/phase-6-wdk.toml
+.codex/agents/phase-7-email.toml
+.codex/agents/phase-7-soft-launch.toml
+.codex/agents/phase-8-email-provider.toml
+.codex/agents/phase-8-hard-launch.toml
+.codex/agents/phase-9-mcp.toml
+.codex/agents/phase-9-publish-sdks.toml
+.codex/agents/phase-launch-polish.toml
+/sessions
+/scripts
+scripts/render-video.mjs

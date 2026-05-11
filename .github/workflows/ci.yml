@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Typecheck (root)
+        run: npx tsc --noEmit -p tsconfig.json
+      - name: Typecheck (@cumulus/server)
+        run: cd packages/server-sdk && npm install --no-audit --no-fund && npx tsc --noEmit
+      - name: Typecheck (@cumulus/cli)
+        run: cd packages/cli && npm install --no-audit --no-fund && npx tsc --noEmit
+      - name: Typecheck (create-cumulus)
+        run: cd packages/create-cumulus && npm install --no-audit --no-fund && npm run typecheck
+      - name: Typecheck (@cumulus/track)
+        run: cd packages/track-sdk && npm install --no-audit --no-fund && npx tsc --noEmit
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - name: Install
+        run: npm ci --no-audit --no-fund
+      - name: Run tests
+        run: npm test
+        env:
+          # Vitest already stubs these via vitest.config.ts, but leaving the
+          # CI-level declaration makes it easy to override if a test ever
+          # reaches for a real service.
+          CI: 'true'

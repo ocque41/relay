@@ -1,0 +1,46 @@
+{
+  "name": "@cumulus/cli",
+  "version": "0.1.0",
+  "description": "CLI for Relay — agent-driven signup. End-user commands: accounts, keys, signups, inbox, share. Developer commands: products, stats, users, logs, scan, subscription, subscribe. init scaffolds a webhook handler into your Next.js project.",
+  "type": "module",
+  "bin": {
+    "relay": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "relay",
+    "cli",
+    "agent",
+    "signup"
+  ],
+  "license": "MIT",
+  "homepage": "https://relay.cumulush.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cumulus-s/relay.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/Cumulus-s/relay/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "typescript": "^5.9.3"
+  }
+}
