@@ -38,12 +38,6 @@ tsconfig.tsbuildinfo
 .vercel/
 
 # ---------------------------------------------------------------------------
-# Internal build + plan artifacts
-# ---------------------------------------------------------------------------
-.tado/
-.claude/
-
-# ---------------------------------------------------------------------------
 # CLI runtime state
 # ---------------------------------------------------------------------------
 .relay/
@@ -88,29 +82,8 @@ tmp/
 *.prores
 .stripe-*.local.txt
 
-# Quarantined macOS Finder duplicates of source files (kept locally for safety)
+# Local agent/runtime state
 .quarantine/
-.agents/skills/relay-integrator-setup/SKILL.md
-.agents/skills/relay-sign-in/SKILL.md
-.codex/agents/phase-0-bootstrap.toml
-.codex/agents/phase-1-scaffolder.toml
-.codex/agents/phase-10-e2e-verify.toml
-.codex/agents/phase-2-charge-middleware.toml
-.codex/agents/phase-2-database.toml
-.codex/agents/phase-3-auth.toml
-.codex/agents/phase-3-wire-enforcement.toml
-.codex/agents/phase-4-neon-provider.toml
-.codex/agents/phase-5-billing-cli-mcp.toml
-.codex/agents/phase-5-vercel-provider.toml
-.codex/agents/phase-6-free-tier.toml
-.codex/agents/phase-6-wdk.toml
-.codex/agents/phase-7-email.toml
-.codex/agents/phase-7-soft-launch.toml
-.codex/agents/phase-8-email-provider.toml
-.codex/agents/phase-8-hard-launch.toml
-.codex/agents/phase-9-mcp.toml
-.codex/agents/phase-9-publish-sdks.toml
-.codex/agents/phase-launch-polish.toml
-/sessions
-/scripts
-scripts/render-video.mjs
+.agents/
+.codex/
+sessions/
