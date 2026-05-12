@@ -201,10 +201,11 @@ function relayDependencies(): Record<string, string> {
     jose: '^6.2.2',
     next: '^16.2.4',
     pino: '^10.3.1',
+    postgres: '^3.4.9',
     react: '^19.2.5',
     'react-dom': '^19.2.5',
     stripe: '^22.0.2',
-    workflow: '^4.2.2',
+    workflow: '^4.2.4',
     zod: '^4.3.6',
   };
 }
@@ -287,7 +288,15 @@ function packageJson(o: RenderOptions): string {
     dependencies: localRelay ? relayDependencies() : hostedDependencies(),
     devDependencies: devDependencies(o),
     overrides: {
+      devalue: '^5.8.0',
+      esbuild: '^0.28.0',
       postcss: '^8.5.14',
+      '@workflow/world-local': {
+        undici: '^7.25.0',
+      },
+      '@workflow/world-vercel': {
+        undici: '^7.25.0',
+      },
     },
     license: generatedLicense(o),
   })}\n`;
@@ -345,7 +354,7 @@ function envExample(o: RenderOptions): string {
 
   if (!localRelay) return `${shared}${cumulusDbSection}\n`;
 
-  return `${shared}\n# Local Relay control plane. This Postgres URL is not Cumulus DB storage.\nDATABASE_URL=\nMASTER_KEY=\nRELAY_JWT_PRIVATE_KEY=\nEMAIL_SENDGRID_SECRET=\nCATCHALL_DOMAIN=inbox.example.com\nRESEND_API_KEY=\nRELAY_FROM_ADDRESS=noreply@example.com\nWEBAUTHN_RP_ID=localhost\nWEBAUTHN_RP_NAME=Relay\nWEBAUTHN_ORIGIN=http://localhost:3000\n${cumulusDbSection}\n# Optional built-in providers\nNEON_API_KEY=\nVERCEL_API_TOKEN=\n\n# Optional billing\nSTRIPE_SECRET_KEY=\nSTRIPE_WEBHOOK_SECRET=\nSTRIPE_PRICE_BUILDER=\nSTRIPE_PRICE_STARTER=\nSTRIPE_PRICE_GROWTH=\nSTRIPE_PRICE_SCALE=\nBILLING_ENFORCEMENT=off\nBILLING_FAIRNESS=on\nABUSE_ENFORCEMENT=warn\nUSER_SIGNUP_MONTHLY_LIMIT=50\nLOG_LEVEL=\nSENTRY_DSN=\nSENTRY_TRACES_SAMPLE_RATE=0.1\n`;
+  return `${shared}\n# Local Relay control plane. This Postgres URL is not Cumulus DB storage.\nDATABASE_URL=\n# auto | neon-http | postgres. Leave blank for auto: localhost uses postgres, hosted URLs use Neon HTTP.\nDATABASE_DRIVER=\nMASTER_KEY=\nRELAY_JWT_PRIVATE_KEY=\nEMAIL_SENDGRID_SECRET=\nCATCHALL_DOMAIN=inbox.example.com\nRESEND_API_KEY=\nRELAY_FROM_ADDRESS=noreply@example.com\nWEBAUTHN_RP_ID=localhost\nWEBAUTHN_RP_NAME=Relay\nWEBAUTHN_ORIGIN=http://localhost:3000\n${cumulusDbSection}\n# Optional built-in providers\nNEON_API_KEY=\nVERCEL_API_TOKEN=\n\n# Optional billing\nSTRIPE_SECRET_KEY=\nSTRIPE_WEBHOOK_SECRET=\nSTRIPE_PRICE_BUILDER=\nSTRIPE_PRICE_STARTER=\nSTRIPE_PRICE_GROWTH=\nSTRIPE_PRICE_SCALE=\nBILLING_ENFORCEMENT=off\nBILLING_FAIRNESS=on\nABUSE_ENFORCEMENT=warn\nUSER_SIGNUP_MONTHLY_LIMIT=50\nLOG_LEVEL=info\nSENTRY_DSN=\nSENTRY_TRACES_SAMPLE_RATE=0.1\n`;
 }
 
 function readme(o: RenderOptions): string {
@@ -368,6 +377,18 @@ function readme(o: RenderOptions): string {
     o.agentAuth === 'hosted'
       ? 'Hosted mode connects those surfaces to hosted Cumulus Cloud by default.'
       : "Self-hosted mode points those surfaces at this app's local Relay API/MCP service.";
+  const cloudOnlyAgplText = hasInside(o.template)
+    ? ' Cloud-only does not always mean MIT: `full` and `inner` include AGPL-covered Relay dashboard/server pieces even when they point at hosted Cumulus DB.'
+    : '';
+  const licenseText = generatedLicense(o) === 'AGPL-3.0-only'
+    ? `## License Boundary
+
+This project is AGPL-3.0-only because it includes the local Relay app/server stack or the local Cumulus DB service.${cloudOnlyAgplText}
+`
+    : `## License Boundary
+
+This project is MIT because it is a small hosted app-side starter and does not include the local Relay server or local Cumulus DB service.
+`;
   const databaseText = !cumulusDbApp && !localCumulusDb
     ? ''
     : localCumulusDb
@@ -403,6 +424,8 @@ This template includes the Relay API, MCP server, Drizzle schema, migrations, wo
 \`\`\`bash
 ${migrateCommand}
 \`\`\`
+
+Relay Postgres supports hosted Neon HTTP and normal local Postgres. Leave \`DATABASE_DRIVER\` blank for auto-detection. Localhost URLs use the \`postgres\` driver; hosted URLs use Neon HTTP. Set \`DATABASE_DRIVER=postgres\` or \`DATABASE_DRIVER=neon-http\` when you need to force one.
 `
     : `## Hosted Integration
 
@@ -419,6 +442,8 @@ Generated with \`create-cumulus\`.
 - License: \`${generatedLicense(o)}\`
 
 This scaffold keeps the Relay/Cumulus user experience, theme, components, and agent-auth shape.
+
+${licenseText}
 
 ## Run
 

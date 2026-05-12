@@ -4,6 +4,27 @@ All notable changes to Relay. Format: [Keep a Changelog](https://keepachangelog.
 
 ## [Unreleased]
 
+## [create-cumulus@0.3.1] — 2026-05-12
+
+### Fixed
+
+- Generated `full` and `inner` local Relay DB apps now support normal local
+  Postgres URLs through `DATABASE_DRIVER` auto-detection instead of forcing Neon
+  HTTP for `localhost` and `127.0.0.1`.
+- Generated Cumulus DB config accepts narrow env objects, so local and both-mode
+  template typechecks do not fail on missing `NODE_ENV`.
+- Empty `LOG_LEVEL` values are treated as unset, and generated examples now
+  default to `LOG_LEVEL=info`.
+- Generated package installs pin safer transitive dependency versions and avoid
+  the reported `workflow`, `undici`, `devalue`, `drizzle-kit`, and `esbuild`
+  audit findings in representative installs.
+- Generated Cumulus DB dashboards now cover health, MCP metadata, KV, events,
+  token management, backup, compact, and compact record views.
+- Generated dashboards include clearer token copy, a form-wrapped password
+  field, `/favicon.ico`, and an HTML hydration warning guard.
+- Generated license docs now explain why `full` and `inner` remain AGPL even
+  when pointed at cloud Cumulus DB.
+
 ## [create-cumulus@0.3.0] — 2026-05-12
 
 ### Added

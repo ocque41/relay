@@ -68,6 +68,16 @@ workspace support. Cumulus DB is separate from Relay Postgres:
 - Cumulus DB stores agent workspace records, key-value data, secrets, and search
   data through a separate HTTP service.
 
+Generated `full` and `inner` projects include the local Relay
+database/session stack even when `--agent-auth hosted` and `--cumulus-db cloud`
+are selected. They are AGPL-3.0-only because that broader Relay stack is
+included. Small hosted `agent-auth --cumulus-db cloud` projects stay MIT.
+
+Relay Postgres supports hosted Neon HTTP and normal local Postgres. Leave
+`DATABASE_DRIVER` blank for auto-detection. Localhost URLs use the `postgres`
+driver; hosted URLs use Neon HTTP. Set `DATABASE_DRIVER=postgres` or
+`DATABASE_DRIVER=neon-http` when you need to force one.
+
 Modes:
 
 | Mode | Meaning |
@@ -140,6 +150,10 @@ The `create-cumulus` package is MIT-licensed.
 Generated `full`, `inner`, and self-hosted templates include the Relay app and
 server and default to AGPL-3.0-only. Small hosted `outer` and `agent-auth`
 templates default to MIT unless they include local Cumulus DB.
+
+Cloud-only does not always mean MIT. `full` and `inner` still include the
+AGPL-covered Relay dashboard/server pieces, so they remain AGPL-3.0-only even
+when they point at hosted Cumulus DB.
 
 Generated public app code talks to Cumulus DB over HTTP/token APIs. It does not
 import source from `apps/cumulus-db`.

@@ -4,8 +4,10 @@ const isDev =
   process.env.VERCEL_ENV !== 'production' &&
   process.env.NODE_ENV !== 'production';
 
+const logLevel = process.env.LOG_LEVEL?.trim() || (isDev ? 'debug' : 'info');
+
 export const logger = pino({
-  level: process.env.LOG_LEVEL ?? (isDev ? 'debug' : 'info'),
+  level: logLevel,
   base: {
     env: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? 'development',
     release: process.env.VERCEL_GIT_COMMIT_SHA ?? null,

@@ -91,6 +91,7 @@ Required for the core app:
 | Variable | Purpose |
 | --- | --- |
 | `DATABASE_URL` | Primary database connection. |
+| `DATABASE_DRIVER` | Optional `postgres` or `neon-http` override. Leave blank for auto-detection. |
 | `MASTER_KEY` | AES-256-GCM encryption key for encrypted columns. |
 | `SESSION_SECRET` | Session JWT signing secret. |
 | `APP_BASE_URL` | Public base URL. |
@@ -129,6 +130,12 @@ Observability:
 | `SENTRY_DSN` | Error reporting. |
 | `SENTRY_TRACES_SAMPLE_RATE` | Trace sample rate. |
 | `LOG_LEVEL` | Pino log level. |
+
+Relay Postgres supports both hosted Neon HTTP and normal local Postgres. Leave
+`DATABASE_DRIVER` blank for auto-detection. Localhost URLs such as
+`postgresql://user@127.0.0.1:5432/relay` use the `postgres` driver; hosted
+URLs use Neon HTTP. Set `DATABASE_DRIVER=postgres` when a deployed Postgres
+host should use a normal TCP driver.
 
 ## Cumulus DB
 

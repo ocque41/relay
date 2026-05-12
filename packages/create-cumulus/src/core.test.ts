@@ -190,7 +190,19 @@ describe('buildFiles', () => {
           expect(files.has('app/openapi.json/route.ts')).toBe(true);
           expect(files.has('src/server/app.ts')).toBe(true);
           expect(files.has('src/mcp/server.ts')).toBe(true);
+          expect(files.get('src/server/db/index.ts')).toContain('resolveDatabaseDriver');
+          expect(files.get('src/server/db/index.ts')).toContain("drizzle-orm/postgres-js");
           expect(files.has('migrations/0000_empty_morgan_stark.sql')).toBe(true);
+        }
+
+        if (template === 'full' || template === 'inside' || agentAuth === 'self-hosted') {
+          expect(files.get('scripts/apply-migration.ts')).toContain('configured Relay');
+          expect(files.get('scripts/apply-migration.ts')).toContain('db.execute');
+          expect(files.get('scripts/check-schema.ts')).toContain('db.execute');
+          expect(files.get('scripts/register-cumulus-tenant.ts')).toContain('db.execute');
+          expect(files.get('scripts/apply-migration.ts')).not.toContain('@neondatabase/serverless');
+          expect(files.get('scripts/check-schema.ts')).not.toContain('@neondatabase/serverless');
+          expect(files.get('scripts/register-cumulus-tenant.ts')).not.toContain('@neondatabase/serverless');
         }
 
         if (template === 'full' || template === 'inside') {
@@ -204,7 +216,17 @@ describe('buildFiles', () => {
 
         if (template === 'full' || template === 'inside' || template === 'agent-auth') {
           expect(files.has('app/api/cumulus-db/env/parse/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/health/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/mcp/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/databases/[id]/events/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/databases/[id]/kv/[key]/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/databases/[id]/tokens/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/databases/[id]/backups/route.ts')).toBe(true);
+          expect(files.has('app/api/cumulus-db/databases/[id]/compact/route.ts')).toBe(true);
           expect(files.has('src/lib/cumulus-db/server.ts')).toBe(true);
+          expect(files.get('app/components/CumulusDatabasePanel.tsx')).toContain('Token management');
+          expect(files.get('app/components/CumulusDatabasePanel.tsx')).toContain('Backup and compact');
+          expect(files.get('app/components/CumulusDatabasePanel.tsx')).toContain('placeholder="Scoped token"');
         }
 
         if (template === 'agent-auth') {
@@ -220,6 +242,7 @@ describe('buildFiles', () => {
           expect(files.has('apps/cumulus-db/NOTICE')).toBe(true);
           expect(files.has('scripts/create-cumulus-db-workspace.ts')).toBe(true);
           expect(files.get('package.json')).toContain('cumulus-db:workspace');
+          expect(files.get('apps/cumulus-db/src/config.ts')).toContain('CumulusDbConfigEnv');
         }
 
         if (template === 'full' || template === 'marketing') {
@@ -276,6 +299,26 @@ describe('buildFiles', () => {
     expect(files.has('scripts/create-cumulus-db-workspace.ts')).toBe(false);
     expect(files.has('app/database/page.tsx')).toBe(true);
     expect(files.get('.env.example')).toContain('CUMULUS_DB_PUBLIC_URL=https://db.cumulush.com');
+  });
+
+  it('emits safer dependency pins and env defaults for local Relay templates', () => {
+    const files = buildFiles(options('full', 'hosted', 'both'));
+    const packageJson = files.get('package.json');
+
+    expect(packageJson).toContain('"postgres": "^3.4.9"');
+    expect(packageJson).toContain('"workflow": "^4.2.4"');
+    expect(packageJson).toContain('"devalue": "^5.8.0"');
+    expect(packageJson).toContain('"esbuild": "^0.28.0"');
+    expect(packageJson).toContain('"undici": "^7.25.0"');
+    expect(files.get('.env.example')).toContain('DATABASE_DRIVER=');
+    expect(files.get('.env.example')).toContain('LOG_LEVEL=info');
+  });
+
+  it('documents AGPL cloud-only full and inner templates clearly', () => {
+    const files = buildFiles(options('full', 'hosted', 'cloud'));
+
+    expect(files.get('package.json')).toContain('"license": "AGPL-3.0-only"');
+    expect(files.get('README.md')).toContain('Cloud-only does not always mean MIT');
   });
 
   it('adds local Cumulus DB service files, scripts, env, and AGPL license', () => {

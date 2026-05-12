@@ -54,6 +54,13 @@ Cumulus DB stores agent workspace records through a hosted or local HTTP API.
 Generated app code talks to Cumulus DB through token-based HTTP routes and does
 not import the local AGPL database service.
 
+Generated `full` and `inner` apps include the local Relay database/session
+stack even in hosted agent-auth mode. Relay Postgres supports hosted Neon HTTP
+and normal local Postgres. Leave `DATABASE_DRIVER` blank for auto-detection:
+localhost URLs use the `postgres` driver, hosted URLs use Neon HTTP. Set
+`DATABASE_DRIVER=postgres` or `DATABASE_DRIVER=neon-http` only when you need to
+force one.
+
 `my-acme` is a placeholder. If you provide `--company "Acme Inc"`, the
 generated folder and package name are derived from the company name. Use any
 non-placeholder first argument when you need an exact folder name.

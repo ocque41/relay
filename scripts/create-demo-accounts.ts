@@ -83,8 +83,7 @@ function slugify(raw: string): string {
 
 async function main(): Promise<void> {
   const args = parseArgs();
-  // Dynamic imports so loadDotEnv() runs BEFORE @neondatabase/serverless reads
-  // DATABASE_URL out of the environment.
+  // Dynamic imports so loadDotEnv() runs before the DB driver reads DATABASE_URL.
   const { eq } = await import('drizzle-orm');
   const { db } = await import('../src/server/db/index');
   const { agents, tenants, users } = await import('../src/server/db/schema');

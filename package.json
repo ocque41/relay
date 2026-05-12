@@ -33,10 +33,11 @@
     "jose": "^6.2.2",
     "next": "^16.2.4",
     "pino": "^10.3.1",
+    "postgres": "^3.4.9",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "stripe": "^22.0.2",
-    "workflow": "^4.2.2",
+    "workflow": "^4.2.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -56,6 +57,7 @@
   },
   "overrides": {
     "devalue": "^5.8.0",
+    "esbuild": "^0.28.0",
     "postcss": "^8.5.14",
     "@workflow/world-local": {
       "undici": "^7.25.0"

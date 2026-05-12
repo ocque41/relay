@@ -1,5 +1,6 @@
 /**
- * Apply a migration file's statements one at a time via the Neon HTTP driver.
+ * Apply a migration file's statements one at a time via the configured Relay
+ * database driver.
  *
  * Usage: npx tsx scripts/apply-migration.ts migrations/0001_cold_brood.sql
  *
@@ -28,7 +29,8 @@ function loadDotEnv(path: string): void {
 }
 loadDotEnv(resolve(process.cwd(), '.env'));
 
-import { neon } from '@neondatabase/serverless';
+import { sql } from 'drizzle-orm';
+import { db } from '../src/server/db/index';
 
 const main = async () => {
   const file = process.argv[2];
@@ -96,14 +98,13 @@ const main = async () => {
   }
 
   console.log(`Applying ${statements.length} statements from ${file}`);
-  const db = neon(process.env.DATABASE_URL!);
 
   let i = 0;
   for (const stmt of statements) {
     i++;
     const head = stmt.slice(0, 80).replace(/\s+/g, ' ');
     try {
-      await db.query(stmt);
+      await db.execute(sql.raw(stmt));
       console.log(`  [${i}/${statements.length}] ok: ${head}…`);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);

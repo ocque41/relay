@@ -19,6 +19,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { randomBytes, createHash } from 'node:crypto';
+import { sql } from 'drizzle-orm';
+import { db } from '../src/server/db/index';
 
 function loadDotEnv(path: string): void {
   try {
@@ -59,19 +61,16 @@ async function main() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error('DATABASE_URL is not set');
 
-  const { neon } = await import('@neondatabase/serverless');
-  const sql = neon(url);
-
   // 1) Owner user.
-  const [user] = await sql`
+  const [user] = (await db.execute(sql`
     INSERT INTO users (email) VALUES (${OWNER_EMAIL})
     ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
     RETURNING id, email
-  ` as unknown as Array<{ id: string; email: string }>;
+  `)).rows as Array<{ id: string; email: string }>;
   console.log(`owner user: ${user.email} (${user.id})`);
 
   // 2) Tenant.
-  const [tenant] = await sql`
+  const [tenant] = (await db.execute(sql`
     INSERT INTO tenants (owner_user_id, name, slug, domain, rp_id, allowed_origins)
     VALUES (${user.id}, ${NAME}, ${SLUG}, ${DOMAIN}, ${RP_ID}, ${JSON.stringify(ALLOWED_ORIGINS)}::jsonb)
     ON CONFLICT (slug) DO UPDATE SET
@@ -80,17 +79,17 @@ async function main() {
       rp_id           = EXCLUDED.rp_id,
       allowed_origins = EXCLUDED.allowed_origins
     RETURNING id, slug, name, domain
-  ` as unknown as Array<{ id: string; slug: string; name: string; domain: string | null }>;
+  `)).rows as Array<{ id: string; slug: string; name: string; domain: string | null }>;
   console.log(`tenant: ${tenant.slug} (${tenant.id})`);
 
   // 3) Integrator-scoped agent bearer.
-  const activeKeys = await sql`
+  const activeKeys = (await db.execute(sql`
     SELECT id, created_at FROM agents
     WHERE tenant_id = ${tenant.id}
       AND scopes @> '["integrator"]'::jsonb
       AND revoked_at IS NULL
     ORDER BY created_at DESC
-  ` as unknown as Array<{ id: string; created_at: Date }>;
+  `)).rows as Array<{ id: string; created_at: Date }>;
 
   if (activeKeys.length > 0 && !SHOULD_ROTATE) {
     console.log(
@@ -104,29 +103,29 @@ async function main() {
 
   if (activeKeys.length > 0 && SHOULD_ROTATE) {
     const ids = activeKeys.map((k) => k.id);
-    await sql`
+    await db.execute(sql`
       UPDATE agents
       SET revoked_at = now()
       WHERE id = ANY(${ids}::uuid[])
-    `;
+    `);
     console.log(`revoked ${ids.length} active integrator key(s)`);
   }
 
   const integratorKey = generateToken();
-  const [minted] = await sql`
+  const [minted] = (await db.execute(sql`
     INSERT INTO agents (user_id, tenant_id, token_hash, label, scopes, expires_at)
     VALUES (${user.id}, ${tenant.id}, ${hashToken(integratorKey)}, ${NAME + ' — server key'}, '["integrator"]'::jsonb, NULL)
     RETURNING id
-  ` as unknown as Array<{ id: string }>;
+  `)).rows as Array<{ id: string }>;
   const integratorKeyId = minted.id;
 
-  const [verification] = await sql`
+  const [verification] = (await db.execute(sql`
     SELECT id FROM agents
     WHERE id = ${integratorKeyId}
       AND token_hash = ${hashToken(integratorKey)}
       AND revoked_at IS NULL
     LIMIT 1
-  ` as unknown as Array<{ id: string }>;
+  `)).rows as Array<{ id: string }>;
   if (!verification) {
     throw new Error('minted integrator key did not verify against agents.token_hash');
   }

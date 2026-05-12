@@ -32,7 +32,7 @@ const themeBootScript = `(function(){try{var k='relay:theme';var s=localStorage.
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <ThemeInit />

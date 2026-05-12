@@ -58,6 +58,7 @@ copyGroup('common', [
     'app/theme.ts',
     'postcss.config.mjs',
     'public/.gitkeep',
+    'public/favicon.ico',
   ),
 ]);
 

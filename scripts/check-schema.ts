@@ -18,18 +18,24 @@ function loadDotEnv(path: string): void {
 }
 loadDotEnv(resolve(process.cwd(), '.env'));
 
-import { neon } from '@neondatabase/serverless';
+import { sql } from 'drizzle-orm';
+import { db } from '../src/server/db/index';
 
 const main = async () => {
-  const sql = neon(process.env.DATABASE_URL!);
-  const rows = (await sql`SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename`) as { tablename: string }[];
+  const rows = (await db.execute(
+    sql`SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename`,
+  )).rows as { tablename: string }[];
   console.log('public tables:', rows.map((r) => r.tablename).join(', '));
 
-  const agents_cols = (await sql`SELECT column_name FROM information_schema.columns WHERE table_name='agents' AND table_schema='public' ORDER BY ordinal_position`) as { column_name: string }[];
+  const agents_cols = (await db.execute(
+    sql`SELECT column_name FROM information_schema.columns WHERE table_name='agents' AND table_schema='public' ORDER BY ordinal_position`,
+  )).rows as { column_name: string }[];
   console.log('agents columns:', agents_cols.map((r) => r.column_name).join(', '));
 
   try {
-    const migr = await sql`SELECT hash, created_at FROM "drizzle"."__drizzle_migrations" ORDER BY created_at`;
+    const migr = (await db.execute(
+      sql`SELECT hash, created_at FROM "drizzle"."__drizzle_migrations" ORDER BY created_at`,
+    )).rows;
     console.log('drizzle migrations applied:', migr.length);
     for (const m of migr) console.log('  -', m);
   } catch {

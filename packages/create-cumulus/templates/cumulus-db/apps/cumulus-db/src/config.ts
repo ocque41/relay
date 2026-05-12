@@ -16,9 +16,16 @@ export interface CumulusDbConfig {
   };
 }
 
-function parseMasterKey(raw: string | undefined): Buffer {
+export type CumulusDbConfigEnv = Record<string, string | undefined>;
+
+function envValue(env: CumulusDbConfigEnv, key: string): string | undefined {
+  const value = env[key]?.trim();
+  return value ? value : undefined;
+}
+
+function parseMasterKey(raw: string | undefined, isProduction: boolean): Buffer {
   if (!raw) {
-    if (process.env.NODE_ENV === 'production') {
+    if (isProduction) {
       throw new Error('CUMULUS_DB_MASTER_KEY is required in production');
     }
     return Buffer.alloc(32, 7);
@@ -37,10 +44,12 @@ export function randomMasterKey(): string {
   return randomBytes(32).toString('base64');
 }
 
-export function loadConfig(env: NodeJS.ProcessEnv = process.env): CumulusDbConfig {
-  const dataDir = resolve(env.CUMULUS_DB_DATA_DIR ?? '.cumulus-db-data');
-  const publicUrl = (env.CUMULUS_DB_PUBLIC_URL ?? 'http://localhost:4317').replace(/\/$/, '');
-  const port = Number(env.CUMULUS_DB_PORT ?? env.PORT ?? '4317');
+export function loadConfig(env: CumulusDbConfigEnv = process.env): CumulusDbConfig {
+  const dataDir = resolve(envValue(env, 'CUMULUS_DB_DATA_DIR') ?? '.cumulus-db-data');
+  const publicUrl = (envValue(env, 'CUMULUS_DB_PUBLIC_URL') ?? 'http://localhost:4317').replace(/\/$/, '');
+  const port = Number(envValue(env, 'CUMULUS_DB_PORT') ?? envValue(env, 'PORT') ?? '4317');
+  const masterKey = envValue(env, 'CUMULUS_DB_MASTER_KEY');
+  const isProduction = envValue(env, 'NODE_ENV') === 'production';
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error('CUMULUS_DB_PORT or PORT must be a valid TCP port');
   }
@@ -48,14 +57,14 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): CumulusDbConfi
   return {
     dataDir,
     publicUrl,
-    adminSecret: env.CUMULUS_DB_MASTER_KEY ?? null,
-    masterKey: parseMasterKey(env.CUMULUS_DB_MASTER_KEY),
-    relayWebhookSecret: env.CUMULUS_DB_RELAY_WEBHOOK_SECRET ?? null,
+    adminSecret: masterKey ?? null,
+    masterKey: parseMasterKey(masterKey, isProduction),
+    relayWebhookSecret: envValue(env, 'CUMULUS_DB_RELAY_WEBHOOK_SECRET') ?? null,
     port,
     embeddings: {
-      baseUrl: env.OPENAI_COMPAT_EMBEDDINGS_BASE_URL || null,
-      apiKey: env.OPENAI_COMPAT_EMBEDDINGS_API_KEY || null,
-      model: env.OPENAI_COMPAT_EMBEDDINGS_MODEL || null,
+      baseUrl: envValue(env, 'OPENAI_COMPAT_EMBEDDINGS_BASE_URL') ?? null,
+      apiKey: envValue(env, 'OPENAI_COMPAT_EMBEDDINGS_API_KEY') ?? null,
+      model: envValue(env, 'OPENAI_COMPAT_EMBEDDINGS_MODEL') ?? null,
     },
   };
 }
