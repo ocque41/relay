@@ -1,6 +1,6 @@
 {
   "name": "create-cumulus",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Create a Cumulus app with Relay-ready agent authentication, signup, actions, dashboards, and optional self-hosted API/MCP.",
   "type": "module",
   "bin": {
@@ -9,12 +9,14 @@
   "main": "./dist/index.js",
   "files": [
     "dist",
+    "templates",
     "README.md",
     "LICENSE",
     "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
+    "refresh-templates": "node scripts/refresh-templates.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "prepublishOnly": "npm run test && npm run build"

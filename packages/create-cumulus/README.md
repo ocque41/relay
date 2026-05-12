@@ -1,7 +1,7 @@
 # create-cumulus
 
-Create a Cumulus app with Relay-ready agent authentication, signup, actions,
-dashboards, and optional self-hosted API/MCP.
+Create a Relay/Cumulus app with Relay-ready agent authentication, signup,
+actions, dashboards, branded UI, and optional self-hosted API/MCP.
 
 ```bash
 npx create-cumulus@latest my-acme
@@ -31,10 +31,10 @@ node packages/create-cumulus/dist/index.js my-acme --template full --agent-auth 
 
 | Template | Includes |
 | --- | --- |
-| `full` | Marketing site, dashboard, API starter, playground, Relay signup/actions. |
-| `outer` | Public marketing/docs site plus agent discovery and signup/action bootstrap. |
-| `inner` | Dashboard, `/me` workspace, settings, API starter, playground, agent auth/actions. |
-| `agent-auth` | Smallest Relay discovery, attestation login, signup, and actions starter. |
+| `full` | Relay public site, `/me`, `/dev`, dashboards, API/MCP, docs, auth, signup, and actions. |
+| `outer` | Relay public marketing/docs site plus discovery, signup, and action bootstrap. |
+| `inner` | Relay `/me` and `/dev` dashboards, settings, API/MCP, auth, and actions. |
+| `agent-auth` | Smallest Relay-branded discovery, attestation login, signup, and actions starter. |
 
 Legacy aliases still work: `marketing` maps to `outer`, and `inside` maps to
 `inner`.
@@ -49,8 +49,13 @@ Legacy aliases still work: `marketing` maps to `outer`, and `inside` maps to
 Hosted mode emits `/.well-known/relay.json`, `/api/relay-login`,
 `/api/agent-signup`, `/api/actions`, and env examples for connecting to Relay.
 
-Self-hosted mode additionally emits `/v1/*`, `/mcp`, `/.well-known/jwks.json`,
-`/openapi.json`, a workflow placeholder, schema notes, and a first migration.
+Self-hosted mode additionally emits the local Relay control plane: `/v1/*`,
+`/mcp`, `/.well-known/jwks.json`, `/openapi.json`, workflows, Drizzle schema,
+and migrations.
+
+`full` and `inner` include the local Relay app/server surfaces because the real
+Relay dashboards depend on the Relay database/session/server modules. In hosted
+mode, their agent-facing bootstrap endpoints default to hosted Cumulus Cloud.
 
 ## Flags
 
@@ -67,6 +72,10 @@ create-cumulus <project-name>
 If flags are missing in a TTY, the CLI asks for them. In non-interactive
 mode it defaults to `full`, `hosted`, `npm`, no install, and no git init.
 
-## License
+## Licenses
 
-MIT.
+The `create-cumulus` package is MIT-licensed.
+
+Generated `full`, `inner`, and self-hosted templates include the Relay app and
+server and default to AGPL-3.0-only. Small hosted `outer` and `agent-auth`
+templates default to MIT.

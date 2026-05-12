@@ -83,6 +83,8 @@ describe('buildFiles', () => {
         expect(files.get('README.md')).toContain(`Template: \`${publicTemplate}\``);
         expect(files.get('README.md')).toContain(`Agent auth mode: \`${agentAuth}\``);
         expect(files.get('package.json')).not.toContain('@cumulus/server');
+        expect(files.get('app/globals.css')).toContain('@import "tailwindcss"');
+        expect(files.get('app/components/DashboardShell.tsx')).toContain('relay-app');
         expect(files.get('src/relay/webhook.ts')).toContain('export const relay');
         expect(files.get('app/.well-known/relay.json/route.ts')).toContain(
           'signupWebhookUrl',
@@ -95,17 +97,22 @@ describe('buildFiles', () => {
           expect(files.has('app/v1/[[...path]]/route.ts')).toBe(true);
           expect(files.has('app/mcp/route.ts')).toBe(true);
           expect(files.has('app/openapi.json/route.ts')).toBe(true);
-          expect(files.has('src/relay-self-hosted/server.ts')).toBe(true);
-          expect(files.has('migrations/0000_cumulus_agent_auth.sql')).toBe(true);
-        } else {
-          expect(files.has('src/relay-self-hosted/server.ts')).toBe(false);
+          expect(files.has('src/server/app.ts')).toBe(true);
+          expect(files.has('src/mcp/server.ts')).toBe(true);
+          expect(files.has('migrations/0000_empty_morgan_stark.sql')).toBe(true);
         }
 
         if (template === 'full' || template === 'inside') {
-          expect(files.has('app/me/page.tsx')).toBe(true);
-          expect(files.has('app/settings/page.tsx')).toBe(true);
+          expect(files.has('app/(user)/me/page.tsx')).toBe(true);
+          expect(files.has('app/(dev)/dev/page.tsx')).toBe(true);
+          expect(files.has('app/dashboard/page.tsx')).toBe(true);
         } else {
-          expect(files.has('app/me/page.tsx')).toBe(false);
+          expect(files.has('app/(user)/me/page.tsx')).toBe(false);
+        }
+
+        if (template === 'full' || template === 'marketing') {
+          expect(files.has('app/docs/page.tsx')).toBe(true);
+          expect(files.has('app/pricing/page.tsx')).toBe(true);
         }
       }
     }
@@ -113,10 +120,18 @@ describe('buildFiles', () => {
 
   it('replaces company text and leaves no template placeholders', () => {
     const files = buildFiles(options('full', 'hosted'));
-    const allContent = [...files.values()].join('\n---file---\n');
+    const allContent = [...files.values()]
+      .filter((value): value is string => typeof value === 'string')
+      .join('\n---file---\n');
     expect(allContent).toContain('Acme Inc');
     expect(allContent).not.toContain('__COMPANY_NAME__');
     expect(allContent).not.toContain('__PROJECT_NAME__');
+  });
+
+  it('includes binary brand font assets', () => {
+    const files = buildFiles(options('agent-auth', 'hosted'));
+    const font = files.get('public/fonts/PlusJakartaSans/PlusJakartaSans-Regular.ttf');
+    expect(font).toBeInstanceOf(Uint8Array);
   });
 });
 

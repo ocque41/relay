@@ -11,6 +11,7 @@ import {
   isTemplateName,
   packageManagers,
   type AgentAuthMode,
+  type FileContent,
   type PackageManager,
   type RenderOptions,
   type TemplateName,
@@ -311,7 +312,11 @@ async function assertWritableTarget(targetDir: string): Promise<void> {
   }
 }
 
-async function writeProjectFile(targetDir: string, filePath: string, content: string): Promise<void> {
+async function writeProjectFile(
+  targetDir: string,
+  filePath: string,
+  content: FileContent,
+): Promise<void> {
   const absolute = resolve(targetDir, filePath);
   await mkdir(dirname(absolute), { recursive: true });
   await writeFile(absolute, content);

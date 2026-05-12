@@ -84,12 +84,12 @@ function startEcho(): Promise<() => void> {
         res.end(
           JSON.stringify({
             accountId: 'integrator-user-42',
-            apiKey: 'sk-live-demo-abcdef123',
+            apiKey: 'demo-live-key-abcdef123',
             externalId: 'user_42',
           }),
         );
       } else if (kind === 'create_api_key') {
-        res.end(JSON.stringify({ key: 'sk-live-demo-new', providerKeyId: 'pk-new' }));
+        res.end(JSON.stringify({ key: 'demo-live-key-new', providerKeyId: 'pk-new' }));
       } else if (kind === 'revoke_api_key') {
         res.end(JSON.stringify({ revoked: true }));
       } else if (kind === 'teardown') {
@@ -163,7 +163,7 @@ async function main(): Promise<void> {
     );
     if (outcome.needsEmail) throw new Error('expected needsEmail=false');
     if (outcome.externalId !== 'user_42') throw new Error(`externalId=${outcome.externalId}`);
-    if (outcome.credentials !== 'sk-live-demo-abcdef123') throw new Error('credentials mismatch');
+    if (outcome.credentials !== 'demo-live-key-abcdef123') throw new Error('credentials mismatch');
     const signupReq = captured.at(-1);
     if (signupReq?.parsed.kind !== 'signup') throw new Error('echo did not see kind=signup');
     if (signupReq?.parsed.email !== 'user@example.com') throw new Error('email not forwarded');
@@ -172,13 +172,13 @@ async function main(): Promise<void> {
     // 4. createApiKey('initial', account) returns the cached key without hitting the webhook
     const beforeCount = captured.length;
     const init = await p.createApiKey({ db }, outcome.account, 'initial');
-    if (init.key !== 'sk-live-demo-abcdef123') throw new Error('initial key mismatch');
+    if (init.key !== 'demo-live-key-abcdef123') throw new Error('initial key mismatch');
     if (captured.length !== beforeCount) throw new Error('createApiKey(initial) should not hit the webhook');
     console.log('  ✓ createApiKey("initial") reused the signup response key');
 
     // 5. createApiKey('other') DOES hit the webhook
     const extra = await p.createApiKey({ db }, { accountId: 'integrator-user-42' }, 'second');
-    if (extra.key !== 'sk-live-demo-new') throw new Error('extra key mismatch');
+    if (extra.key !== 'demo-live-key-new') throw new Error('extra key mismatch');
     console.log('  ✓ createApiKey("second") dispatched and returned new key');
 
     // 6. revokeApiKey + teardown dispatch correctly

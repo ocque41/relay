@@ -1273,7 +1273,7 @@ function ResultCard({
           >
             <div>
               <span style={{ color: INK3 }}>ANTHROPIC_API_KEY=</span>
-              sk-ant-api03-
+              demo-anthropic-key-
               {bar > 0.2 ? 'xF9' : ''}
               {bar > 0.35 ? 'kL2vQ8w' : ''}
               {bar > 0.55 ? 'rN4mY7b' : ''}

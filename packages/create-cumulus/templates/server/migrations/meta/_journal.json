@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1776328534409,
+      "tag": "0000_empty_morgan_stark",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776419178810,
+      "tag": "0001_cold_brood",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776423015632,
+      "tag": "0002_steady_martin_li",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776426862921,
+      "tag": "0003_fair_quentin_quire",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776427904935,
+      "tag": "0004_tiny_silhouette",
+      "breakpoints": true
+    }
+  ]
+}
